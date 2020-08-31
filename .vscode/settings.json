@@ -1,0 +1,8 @@
+{
+    "python.venvFolders": [
+        "spaceInvaders-env"
+    ],
+    "python.linting.pylintArgs": [
+        "--extension-pkg-whitelist=pygame"
+    ]
+}
