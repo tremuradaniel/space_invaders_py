@@ -2,6 +2,7 @@
 Pygame is a set of Python modules designed for writing games.
 """
 import pygame
+import random
 
 # initialize pygame
 pygame.init()
@@ -26,6 +27,17 @@ player_x = X_MIDDLE_OF_SCREEN
 Y_BOTTOM_OF_SCREEN = 90 * SCREEN_HEIGHT / 100
 player_y = Y_BOTTOM_OF_SCREEN
 
+# Enemy
+enemyImg = pygame.image.load('resources/enemy.png')
+ENEMY_IMG_WIDTH = playerImg.get_rect().size[0]
+
+# setting initial position
+X_ENEMY_MIDDLE_OF_SCREEN = int (SCREEN_WIDTH / 2 - ENEMY_IMG_WIDTH / 2)
+enemy_x = X_MIDDLE_OF_SCREEN
+Y_ENEMY_TOP_OF_SCREEN = 10 * SCREEN_HEIGHT / 100
+enemy_y = Y_ENEMY_TOP_OF_SCREEN
+
+
 # unit of motion
 STEP = 0.3
 player_x_change = 0
@@ -36,6 +48,10 @@ RIGHT_OUT_OF_BOUNDS = SCREEN_WIDTH - PLAYER_IMG_WIDTH
 def player(player_x, player_y):
     """    draw player    """
     screen.blit(playerImg, (player_x, player_y))
+
+def enemy(enemy_x, enemy_y):
+    """    draw player    """
+    screen.blit(enemyImg, (enemy_x, enemy_y))
 
 RUNNING = True
 
@@ -61,4 +77,5 @@ while RUNNING:
         player_x = RIGHT_OUT_OF_BOUNDS
     screen.fill(BACKGROUND_COLOR)
     player(player_x, player_y)
+    enemy(enemy_x, enemy_y)
     pygame.display.update()
