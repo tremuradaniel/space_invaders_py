@@ -15,6 +15,8 @@ pygame.init()
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 900
 BACKGROUND_COLOR = (23, 23, 100) # rgb
+BACKGROUND_IMAGE = pygame.image.load('resources/background.png')
+BACKGRROUND_IMAGE_RESIZED = pygame.transform.scale(BACKGROUND_IMAGE, (SCREEN_WIDTH, SCREEN_HEIGHT))
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Title and icon
@@ -34,7 +36,7 @@ Y_BOTTOM_OF_SCREEN = 90 * SCREEN_HEIGHT / 100
 player_y = Y_BOTTOM_OF_SCREEN
 
 # unit of motion
-STEP = 0.3
+STEP = 2
 player_x_change = 0
 player_y_change = 0
 
@@ -49,7 +51,7 @@ enemy_x = random.randint(0, SCREEN_WIDTH - ENEMY_IMG_WIDTH)
 Y_ENEMY_TOP_OF_SCREEN = 10 * SCREEN_HEIGHT / 100
 enemy_y = Y_ENEMY_TOP_OF_SCREEN
 enemy_direction = 1
-ENEMY_STEP = 0.3
+ENEMY_STEP = 1.3
 ENEMY_STEP_DOWN = 40
 
 
@@ -96,7 +98,8 @@ while RUNNING:
         enemy_direction = -1
         enemy_y += ENEMY_STEP_DOWN
 
-    screen.fill(BACKGROUND_COLOR)
+    # screen.fill(BACKGROUND_COLOR)
+    screen.blit(BACKGRROUND_IMAGE_RESIZED, (0, 0))
 
 
     player(player_x, player_y)
