@@ -1,8 +1,12 @@
 """
+Randaom library
+"""
+import random
+"""
 Pygame is a set of Python modules designed for writing games.
 """
 import pygame
-import random
+
 
 # initialize pygame
 pygame.init()
@@ -18,7 +22,9 @@ pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load('resources/ufo.png')
 pygame.display.set_icon(icon)
 
-# Player
+"""
+    PLAYER
+"""
 playerImg = pygame.image.load('resources/player.png')
 PLAYER_IMG_WIDTH = playerImg.get_rect().size[0]
 # setting initial position
@@ -27,23 +33,28 @@ player_x = X_MIDDLE_OF_SCREEN
 Y_BOTTOM_OF_SCREEN = 90 * SCREEN_HEIGHT / 100
 player_y = Y_BOTTOM_OF_SCREEN
 
-# Enemy
-enemyImg = pygame.image.load('resources/enemy.png')
-ENEMY_IMG_WIDTH = playerImg.get_rect().size[0]
-
-# setting initial position
-X_ENEMY_MIDDLE_OF_SCREEN = int (SCREEN_WIDTH / 2 - ENEMY_IMG_WIDTH / 2)
-enemy_x = X_MIDDLE_OF_SCREEN
-Y_ENEMY_TOP_OF_SCREEN = 10 * SCREEN_HEIGHT / 100
-enemy_y = Y_ENEMY_TOP_OF_SCREEN
-
-
 # unit of motion
 STEP = 0.3
 player_x_change = 0
 player_y_change = 0
 
+"""
+    ENEMY
+"""
+enemyImg = pygame.image.load('resources/enemy.png')
+ENEMY_IMG_WIDTH = playerImg.get_rect().size[0]
+
+# setting initial position
+enemy_x = random.randint(0, SCREEN_WIDTH - ENEMY_IMG_WIDTH)
+Y_ENEMY_TOP_OF_SCREEN = 10 * SCREEN_HEIGHT / 100
+enemy_y = Y_ENEMY_TOP_OF_SCREEN
+enemy_direction = 1
+ENEMY_STEP = 0.3
+ENEMY_STEP_DOWN = 40
+
+
 RIGHT_OUT_OF_BOUNDS = SCREEN_WIDTH - PLAYER_IMG_WIDTH
+ENEMY_RIGHT_OUT_OF_BOUNDS = SCREEN_WIDTH - ENEMY_IMG_WIDTH
 
 def player(player_x, player_y):
     """    draw player    """
@@ -75,7 +86,19 @@ while RUNNING:
         player_x = 0
     elif player_x >= RIGHT_OUT_OF_BOUNDS:
         player_x = RIGHT_OUT_OF_BOUNDS
+
+    # Enemy Movement
+    enemy_x += ENEMY_STEP * enemy_direction
+    if enemy_x <= 0:
+        enemy_y += ENEMY_STEP_DOWN
+        enemy_direction = 1
+    elif enemy_x >= ENEMY_RIGHT_OUT_OF_BOUNDS:
+        enemy_direction = -1
+        enemy_y += ENEMY_STEP_DOWN
+
     screen.fill(BACKGROUND_COLOR)
+
+
     player(player_x, player_y)
     enemy(enemy_x, enemy_y)
     pygame.display.update()
