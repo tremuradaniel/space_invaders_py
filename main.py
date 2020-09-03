@@ -19,9 +19,6 @@ BACKGROUND_IMAGE = pygame.image.load('resources/background.png')
 BACKGRROUND_IMAGE_RESIZED = pygame.transform.scale(BACKGROUND_IMAGE, (SCREEN_WIDTH, SCREEN_HEIGHT))
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-
-score = 0
-
 # Title and icon
 pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load('resources/ufo.png')
@@ -78,6 +75,18 @@ bullet_state = 'ready'
 
 RIGHT_OUT_OF_BOUNDS = SCREEN_WIDTH - PLAYER_IMG_WIDTH
 ENEMY_RIGHT_OUT_OF_BOUNDS = SCREEN_WIDTH - ENEMY_IMG_WIDTH
+
+# Score
+score_value = 0
+font = pygame.font.Font('freesansbold.ttf', 32)
+
+text_x = 10
+text_y = 10
+
+
+def show_score(x, y):
+    score = font.render("Score : " + str(score_value), True, (255, 255, 255))
+    screen.blit(score, (x, y))
 
 def player(player_x, player_y):
     """    draw player    """
@@ -145,12 +154,10 @@ while RUNNING:
         if collision:
             bullet_y = player_y
             bullet_state = 'ready'
-            score += 1
-            print(score)
+            score_value += 1
             enemies_x[i] = random.randint(0, SCREEN_WIDTH - ENEMY_IMG_WIDTH)
             enemies_y[i] = Y_ENEMY_TOP_OF_SCREEN
 
-        print('i', i)
         enemy(enemies_x[i], enemies_y[i], 1)
         enemy(enemies_x[0], enemies_y[0], 0)
 
@@ -164,9 +171,6 @@ while RUNNING:
         bullet_y -= BULLET_Y_STEP
 
     player(player_x, player_y)
-    # enemy(enemies_x[0], enemies_y[0],0)
-    # enemy(enemies_x[1], enemies_y[1], 1)
-    # enemy(enemies_x[3], enemies_y[3], 3)
-    # enemy(enemies_x[3], enemies_y[3], 3)
-
+    
+    show_score(text_x, text_y)
     pygame.display.update()
