@@ -6,7 +6,7 @@ import random
 Pygame is a set of Python modules designed for writing games.
 """
 import pygame
-
+import math
 
 # initialize pygame
 pygame.init()
@@ -18,6 +18,9 @@ BACKGROUND_COLOR = (23, 23, 100) # rgb
 BACKGROUND_IMAGE = pygame.image.load('resources/background.png')
 BACKGRROUND_IMAGE_RESIZED = pygame.transform.scale(BACKGROUND_IMAGE, (SCREEN_WIDTH, SCREEN_HEIGHT))
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+
+score = 0
 
 # Title and icon
 pygame.display.set_caption("Space Invaders")
@@ -83,6 +86,12 @@ def fire_bullet(bullet_coord_x, bullet_coord_y):
     bullet_above_player_y = bullet_coord_x + 16
     screen.blit(bulletImg, (bullet_above_player_y, bullet_above_player_x))
 
+def isCollision(enemy_x, enemy_y, bullet_x, bullet_y):
+    power_diff_xs = math.pow(enemy_x - bullet_x, 2)
+    power_diff_ys = math.pow(enemy_y - bullet_y, 2)
+    distance = math.sqrt(power_diff_xs + power_diff_ys)
+    return distance < 27
+
 RUNNING = True
 
 while RUNNING:
@@ -129,7 +138,15 @@ while RUNNING:
     if bullet_state is 'fire':
         fire_bullet(bullet_x, bullet_y)
         bullet_y -= BULLET_Y_STEP
-
+    # collision
+    collision = isCollision(enemy_x, enemy_y, bullet_x, bullet_y)
+    if collision:
+        bullet_y = player_y
+        bullet_state = 'ready'
+        score += 1
+        print(score)
+        enemy_x = random.randint(0, SCREEN_WIDTH - ENEMY_IMG_WIDTH)
+        enemy_y = Y_ENEMY_TOP_OF_SCREEN
     player(player_x, player_y)
     enemy(enemy_x, enemy_y)
     pygame.display.update()
