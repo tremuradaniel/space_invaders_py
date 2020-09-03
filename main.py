@@ -46,15 +46,23 @@ player_y_change = 0
 """
     ENEMY
 """
-enemyImg = pygame.image.load('resources/enemy.png')
-ENEMY_IMG_WIDTH = playerImg.get_rect().size[0]
-
-# setting initial position
-enemy_x = random.randint(0, SCREEN_WIDTH - ENEMY_IMG_WIDTH)
+enemiesImg = []
+enemies_x = []
+enemies_y = []
+enemies_direction = []
+NUM_OF_ENEMIES = 6
 Y_ENEMY_TOP_OF_SCREEN = 10 * SCREEN_HEIGHT / 100
-enemy_y = Y_ENEMY_TOP_OF_SCREEN
-enemy_direction = 1
-ENEMY_STEP = 1.3
+ENEMY_IMG_WIDTH = 0
+
+for i in range(NUM_OF_ENEMIES):
+    enemiesImg.append(pygame.image.load('resources/enemy.png'))
+    # setting initial position
+    ENEMY_IMG_WIDTH = enemiesImg[i].get_rect().size[0]
+    enemies_x.append(random.randint(0, SCREEN_WIDTH - ENEMY_IMG_WIDTH))
+    enemies_y.append(Y_ENEMY_TOP_OF_SCREEN)
+    enemies_direction.append(1)
+
+ENEMY_STEP = 2
 ENEMY_STEP_DOWN = 40
 
 
@@ -75,9 +83,9 @@ def player(player_x, player_y):
     """    draw player    """
     screen.blit(playerImg, (player_x, player_y))
 
-def enemy(enemy_x, enemy_y):
-    """    draw player    """
-    screen.blit(enemyImg, (enemy_x, enemy_y))
+def enemy(enemy_x, enemy_y, i):
+    """    draw enemy    """
+    screen.blit(enemiesImg[i], (enemy_x, enemy_y))
 
 def fire_bullet(bullet_coord_x, bullet_coord_y):
     global bullet_state
@@ -95,6 +103,9 @@ def isCollision(enemy_x, enemy_y, bullet_x, bullet_y):
 RUNNING = True
 
 while RUNNING:
+    # screen.fill(BACKGROUND_COLOR)
+    screen.blit(BACKGRROUND_IMAGE_RESIZED, (0, 0))
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
@@ -118,18 +129,31 @@ while RUNNING:
         player_x = 0
     elif player_x >= RIGHT_OUT_OF_BOUNDS:
         player_x = RIGHT_OUT_OF_BOUNDS
+        
+    for i in range(NUM_OF_ENEMIES):
+        # Enemy Movement
+        enemies_x[i] += ENEMY_STEP * enemies_direction[i]
+        if enemies_x[i] <= 0:
+            enemies_y[i] += ENEMY_STEP_DOWN
+            enemies_direction[i] = 1
+        elif enemies_x[i] >= ENEMY_RIGHT_OUT_OF_BOUNDS:
+            enemies_direction[i] = -1
+            enemies_y[i] += ENEMY_STEP_DOWN
 
-    # Enemy Movement
-    enemy_x += ENEMY_STEP * enemy_direction
-    if enemy_x <= 0:
-        enemy_y += ENEMY_STEP_DOWN
-        enemy_direction = 1
-    elif enemy_x >= ENEMY_RIGHT_OUT_OF_BOUNDS:
-        enemy_direction = -1
-        enemy_y += ENEMY_STEP_DOWN
+        # collision
+        collision = isCollision(enemies_x[i], enemies_y[i], bullet_x, bullet_y)
+        if collision:
+            bullet_y = player_y
+            bullet_state = 'ready'
+            score += 1
+            print(score)
+            enemies_x[i] = random.randint(0, SCREEN_WIDTH - ENEMY_IMG_WIDTH)
+            enemies_y[i] = Y_ENEMY_TOP_OF_SCREEN
 
-    # screen.fill(BACKGROUND_COLOR)
-    screen.blit(BACKGRROUND_IMAGE_RESIZED, (0, 0))
+        print('i', i)
+        enemy(enemies_x[i], enemies_y[i], 1)
+        enemy(enemies_x[0], enemies_y[0], 0)
+
 
     # bullet movement
     if bullet_y <= 0:
@@ -138,15 +162,11 @@ while RUNNING:
     if bullet_state is 'fire':
         fire_bullet(bullet_x, bullet_y)
         bullet_y -= BULLET_Y_STEP
-    # collision
-    collision = isCollision(enemy_x, enemy_y, bullet_x, bullet_y)
-    if collision:
-        bullet_y = player_y
-        bullet_state = 'ready'
-        score += 1
-        print(score)
-        enemy_x = random.randint(0, SCREEN_WIDTH - ENEMY_IMG_WIDTH)
-        enemy_y = Y_ENEMY_TOP_OF_SCREEN
+
     player(player_x, player_y)
-    enemy(enemy_x, enemy_y)
+    # enemy(enemies_x[0], enemies_y[0],0)
+    # enemy(enemies_x[1], enemies_y[1], 1)
+    # enemy(enemies_x[3], enemies_y[3], 3)
+    # enemy(enemies_x[3], enemies_y[3], 3)
+
     pygame.display.update()
