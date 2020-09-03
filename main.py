@@ -55,6 +55,16 @@ ENEMY_STEP = 1.3
 ENEMY_STEP_DOWN = 40
 
 
+"""
+    BULLET
+"""
+bulletImg = pygame.image.load('resources/bullet.png')
+bullet_x = 0
+bullet_y = player_y
+BULLET_X_STEP = 4
+BULLET_Y_STEP = 10
+bullet_state = 'ready'
+
 RIGHT_OUT_OF_BOUNDS = SCREEN_WIDTH - PLAYER_IMG_WIDTH
 ENEMY_RIGHT_OUT_OF_BOUNDS = SCREEN_WIDTH - ENEMY_IMG_WIDTH
 
@@ -65,6 +75,13 @@ def player(player_x, player_y):
 def enemy(enemy_x, enemy_y):
     """    draw player    """
     screen.blit(enemyImg, (enemy_x, enemy_y))
+
+def fire_bullet(bullet_coord_x, bullet_coord_y):
+    global bullet_state
+    bullet_state = 'fire'
+    bullet_above_player_x = bullet_coord_y + 10
+    bullet_above_player_y = bullet_coord_x + 16
+    screen.blit(bulletImg, (bullet_above_player_y, bullet_above_player_x))
 
 RUNNING = True
 
@@ -79,6 +96,8 @@ while RUNNING:
                 player_x_change = -STEP
             if event.key == pygame.K_RIGHT:
                 player_x_change = STEP
+            if event.key == pygame.K_SPACE:
+                fire_bullet(player_x, bullet_y)
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 player_x_change = 0
@@ -101,6 +120,10 @@ while RUNNING:
     # screen.fill(BACKGROUND_COLOR)
     screen.blit(BACKGRROUND_IMAGE_RESIZED, (0, 0))
 
+    # bullet movement
+    if bullet_state is 'fire':
+        fire_bullet(player_x, bullet_y)
+        bullet_y -= BULLET_Y_STEP
 
     player(player_x, player_y)
     enemy(enemy_x, enemy_y)
