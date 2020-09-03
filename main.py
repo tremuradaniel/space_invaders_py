@@ -8,6 +8,8 @@ Pygame is a set of Python modules designed for writing games.
 import pygame
 import math
 
+from pygame import mixer
+
 # initialize pygame
 pygame.init()
 
@@ -18,6 +20,15 @@ BACKGROUND_COLOR = (23, 23, 100) # rgb
 BACKGROUND_IMAGE = pygame.image.load('resources/background.png')
 BACKGRROUND_IMAGE_RESIZED = pygame.transform.scale(BACKGROUND_IMAGE, (SCREEN_WIDTH, SCREEN_HEIGHT))
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+# background sound
+mixer.music.load('resources/background.wav')
+PLAY_MUSIC_ON_LOOP = -1
+mixer.music.play(PLAY_MUSIC_ON_LOOP)
+
+# other sound effects
+EXPLOSION_SOUND = mixer.Sound('resources/explosion.wav')
+BULLET_SOUND = mixer.Sound('resources/laser.wav')
 
 # Title and icon
 pygame.display.set_caption("Space Invaders")
@@ -129,6 +140,7 @@ while RUNNING:
                 if bullet_state is 'ready':
                     bullet_x = player_x
                     fire_bullet(bullet_x, bullet_y)
+                    BULLET_SOUND.play()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 player_x_change = 0
@@ -152,6 +164,7 @@ while RUNNING:
         # collision
         collision = isCollision(enemies_x[i], enemies_y[i], bullet_x, bullet_y)
         if collision:
+            EXPLOSION_SOUND.play()
             bullet_y = player_y
             bullet_state = 'ready'
             score_value += 1
