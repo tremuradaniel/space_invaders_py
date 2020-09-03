@@ -70,7 +70,7 @@ for i in range(NUM_OF_ENEMIES):
     enemies_y.append(Y_ENEMY_TOP_OF_SCREEN)
     enemies_direction.append(1)
 
-ENEMY_STEP = 10
+ENEMY_STEP = 4
 ENEMY_STEP_DOWN = 90
 
 
