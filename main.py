@@ -70,8 +70,8 @@ for i in range(NUM_OF_ENEMIES):
     enemies_y.append(Y_ENEMY_TOP_OF_SCREEN)
     enemies_direction.append(1)
 
-ENEMY_STEP = 2
-ENEMY_STEP_DOWN = 40
+ENEMY_STEP = 10
+ENEMY_STEP_DOWN = 90
 
 
 """
@@ -94,6 +94,13 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 text_x = 10
 text_y = 10
 
+# Game Over text
+over_font = pygame.font.Font('freesansbold.ttf', 64)
+game_over = False
+
+def game_over_text():
+    over_text = font.render("GAME OVER!", True, (255, 255, 255))
+    screen.blit(over_text, (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
 
 def show_score(x, y):
     score = font.render("Score : " + str(score_value), True, (255, 255, 255))
@@ -152,6 +159,16 @@ while RUNNING:
         player_x = RIGHT_OUT_OF_BOUNDS
         
     for i in range(NUM_OF_ENEMIES):
+        # Game Over
+        # print('player_y', player_y)
+        print('enemies_y[0]', enemies_y[i])
+        print('Y_BOTTOM_OF_SCREEN * 100 / 10[0]', Y_BOTTOM_OF_SCREEN - 10)
+        if enemies_y[i] >= player_y and (int (enemies_x[i] + ENEMY_IMG_WIDTH) >= player_x) and not game_over:
+            game_over = True
+            EXPLOSION_SOUND.play(3)
+            for j in range(NUM_OF_ENEMIES):
+                enemies_y[j] = 2000
+            break
         # Enemy Movement
         enemies_x[i] += ENEMY_STEP * enemies_direction[i]
         if enemies_x[i] <= 0:
@@ -163,7 +180,7 @@ while RUNNING:
 
         # collision
         collision = isCollision(enemies_x[i], enemies_y[i], bullet_x, bullet_y)
-        if collision:
+        if collision and not game_over:
             EXPLOSION_SOUND.play()
             bullet_y = player_y
             bullet_state = 'ready'
@@ -174,6 +191,8 @@ while RUNNING:
         enemy(enemies_x[i], enemies_y[i], 1)
         enemy(enemies_x[0], enemies_y[0], 0)
 
+    if game_over:
+        game_over_text()
 
     # bullet movement
     if bullet_y <= 0:
