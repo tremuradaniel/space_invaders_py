@@ -26,12 +26,18 @@ class Game:
     self.setGameBarContent()
     self.initializeSound()
     self.initializeScore()
-    # self.initializePlayer(Player())
+    self.initializePlayer(Player(pygame))
     self.runGame()
+
+  def displayPlayer(self):
+    self.screen.blit(
+        self.player.playerImg, 
+        (self.player.player_x, self.player.player_y)
+      )
 
   def initializePlayer(self, player):
     self.setPlayer(player)
-    self.player.setInitialPosition(X_MIDDLE_OF_SCREEN, )
+    self.player.setInitialPosition(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
   def setPlayer(self, player):
     self.player = player
@@ -142,6 +148,6 @@ class Game:
       #     self.fire_bullet(self.bullet_x, self.bullet_y)
       #     self.bullet_y -= self.BULLET_Y_STEP
 
-      # self.player(self.player_x, self.player_y)
+      self.displayPlayer()
       self.showScore(self.text_x, self.text_y)
       pygame.display.update()
